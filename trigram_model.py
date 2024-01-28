@@ -36,7 +36,11 @@ def get_ngrams(sequence, n):
     This should work for arbitrary values of n >= 1 
     """
 
-    return []
+    full_sequence = ['START'] * max(1, (n - 1)) + sequence + ['STOP']
+    res = []
+    for i in range(len(full_sequence) - n + 1):
+        res.append(tuple(full_sequence[i:i + n]))
+    return res
 
 
 class TrigramModel(object):
@@ -148,7 +152,11 @@ def essay_scoring_experiment(training_file1, training_file2, testdir1, testdir2)
 
 if __name__ == "__main__":
 
-    model = TrigramModel(sys.argv[1]) 
+    # model = TrigramModel(sys.argv[1]) 
+
+    print(get_ngrams(["natural","language","processing"],1))
+    print(get_ngrams(["natural","language","processing"],2))
+    print(get_ngrams(["natural","language","processing"],3))
 
     # put test code here...
     # or run the script from the command line with 
