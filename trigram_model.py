@@ -66,11 +66,17 @@ class TrigramModel(object):
         and trigram counts. 
         """
    
-        self.unigramcounts = {} # might want to use defaultdict or Counter instead
-        self.bigramcounts = {} 
-        self.trigramcounts = {} 
+        self.unigramcounts = defaultdict(int)
+        self.bigramcounts = defaultdict(int) 
+        self.trigramcounts = defaultdict(int)
 
-        ##Your code here
+        for sentence in corpus:
+            for i in get_ngrams(sentence, 1):
+                self.unigramcounts[i] += 1
+            for i in get_ngrams(sentence, 2):
+                self.bigramcounts[i] += 1
+            for i in get_ngrams(sentence, 3):
+                self.trigramcounts[i] += 1
 
         return
 
@@ -152,11 +158,15 @@ def essay_scoring_experiment(training_file1, training_file2, testdir1, testdir2)
 
 if __name__ == "__main__":
 
-    # model = TrigramModel(sys.argv[1]) 
+    model = TrigramModel(sys.argv[1]) 
 
-    print(get_ngrams(["natural","language","processing"],1))
-    print(get_ngrams(["natural","language","processing"],2))
-    print(get_ngrams(["natural","language","processing"],3))
+    # print(get_ngrams(["natural","language","processing"],1))
+    # print(get_ngrams(["natural","language","processing"],2))
+    # print(get_ngrams(["natural","language","processing"],3))
+
+    print(model.trigramcounts[('START','START','the')])
+    print(model.bigramcounts[('START','the')])
+    print(model.unigramcounts[('the',)])
 
     # put test code here...
     # or run the script from the command line with 
