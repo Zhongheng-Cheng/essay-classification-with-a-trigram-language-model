@@ -58,6 +58,9 @@ class TrigramModel(object):
         generator = corpus_reader(corpusfile, self.lexicon)
         self.count_ngrams(generator)
 
+        # Calculate the total number of words including "STOP"s but not "START"s
+        self.word_count = sum(self.unigramcounts.values()) - self.unigramcounts[('START',)]
+
 
     def count_ngrams(self, corpus):
         """
@@ -99,14 +102,10 @@ class TrigramModel(object):
         COMPLETE THIS METHOD (PART 3)
         Returns the raw (unsmoothed) unigram probability.
         """
-        if not hasattr(self, 'word_count'):
-            self.word_count = sum(self.unigramcounts.values()) - self.unigramcounts[('START',)] - self.unigramcounts[('STOP',)]
-
-        uni_prob = self.unigramcounts[unigram] / self.word_count
         #hint: recomputing the denominator every time the method is called
         # can be slow! You might want to compute the total number of words once, 
         # store in the TrigramModel instance, and then re-use it.  
-        return uni_prob
+        return self.unigramcounts[unigram] / self.word_count
 
     def generate_sentence(self,t=20): 
         """
@@ -171,7 +170,9 @@ if __name__ == "__main__":
     # print(model.bigramcounts[('START','the')])
     # print(model.unigramcounts[('the',)])
 
+    print(model.raw_unigram_probability(('START', )))
     print(model.raw_unigram_probability(('the', )))
+    print(model.raw_unigram_probability(('STOP', )))
 
     # put test code here...
     # or run the script from the command line with 
