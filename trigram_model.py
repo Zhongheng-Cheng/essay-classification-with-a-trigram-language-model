@@ -100,9 +100,9 @@ class TrigramModel(object):
         Returns the raw (unsmoothed) unigram probability.
         """
         if not hasattr(self, 'word_count'):
-            self.unigram_count = sum(self.unigramcounts.values()) - self.unigramcounts[('START',)] - self.unigramcounts[('STOP',)]
+            self.word_count = sum(self.unigramcounts.values()) - self.unigramcounts[('START',)] - self.unigramcounts[('STOP',)]
 
-        uni_prob = self.unigramcounts[unigram] / self.unigram_count
+        uni_prob = self.unigramcounts[unigram] / self.word_count
         #hint: recomputing the denominator every time the method is called
         # can be slow! You might want to compute the total number of words once, 
         # store in the TrigramModel instance, and then re-use it.  
