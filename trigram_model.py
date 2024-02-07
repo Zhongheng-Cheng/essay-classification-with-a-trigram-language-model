@@ -60,6 +60,7 @@ class TrigramModel(object):
 
         # Calculate the total number of words including "STOP"s but not "START"s
         self.word_count = sum(self.unigramcounts.values()) - self.unigramcounts[('START',)]
+        self.sentence_count = self.unigramcounts[('START', )]
 
 
     def count_ngrams(self, corpus):
@@ -94,8 +95,18 @@ class TrigramModel(object):
         """
         COMPLETE THIS METHOD (PART 3)
         Returns the raw (unsmoothed) bigram probability
+
+        P(w | u) = P(u, w) / P(u) 
+        == (Count((u, w)) / Count_bigrams)) / (Count(u) / Count_unigrams_without_start)
+        Since Count_bigrams == Count_unigrams_without_start
+        we get P(w | u) = count((u, w)) / count(u)
         """
-        return 0.0
+        if bigram[0] == 'START':
+            denominator = self.sentence_count
+        else:
+            denominator = self.unigramcounts[bigram[:-1]]
+
+        return self.bigramcounts[bigram] / denominator
     
     def raw_unigram_probability(self, unigram):
         """
@@ -105,6 +116,8 @@ class TrigramModel(object):
         #hint: recomputing the denominator every time the method is called
         # can be slow! You might want to compute the total number of words once, 
         # store in the TrigramModel instance, and then re-use it.  
+        if unigram == "START":
+            return 0.0
         return self.unigramcounts[unigram] / self.word_count
 
     def generate_sentence(self,t=20): 
@@ -170,9 +183,9 @@ if __name__ == "__main__":
     # print(model.bigramcounts[('START','the')])
     # print(model.unigramcounts[('the',)])
 
-    print(model.raw_unigram_probability(('START', )))
-    print(model.raw_unigram_probability(('the', )))
-    print(model.raw_unigram_probability(('STOP', )))
+    print(model.raw_bigram_probability(('START', 'the')))
+    print(model.raw_bigram_probability(('the', 'biggest')))
+    # print(model.raw_bigram_probability(('', )))
 
     # put test code here...
     # or run the script from the command line with 
