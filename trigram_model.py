@@ -137,7 +137,16 @@ class TrigramModel(object):
         Generate a random sentence from the trigram model. t specifies the
         max length, but the sentence may be shorter if STOP is reached.
         """
-        return result            
+        from numpy.random import choice
+        current_tokens = ('START', 'START')
+        sentence = []
+        while (not sentence or sentence[-1] != 'STOP') and len(sentence) < t:
+            candidates = [trigram for trigram in self.trigramcounts.keys() if trigram[:2] == current_tokens]
+            probabilities = [self.raw_trigram_probability(trigram) for trigram in candidates]
+            generated_word = choice([candidate[2] for candidate in candidates], 1, p=probabilities)[0]
+            sentence.append(generated_word)
+            current_tokens = (current_tokens[1], generated_word)
+        return sentence            
 
     def smoothed_trigram_probability(self, trigram):
         """
@@ -194,9 +203,10 @@ if __name__ == "__main__":
     # print(model.bigramcounts[('START','the')])
     # print(model.unigramcounts[('the',)])
 
-    print(model.raw_trigram_probability(('START', 'START', 'end')))
+    # print(model.raw_trigram_probability(('START', 'START', 'end')))
     # print(model.raw_bigram_probability(('the', 'biggest')))
     # print(model.raw_bigram_probability(('', )))
+    print(model.generate_sentence())
 
     # put test code here...
     # or run the script from the command line with 
