@@ -141,9 +141,10 @@ class TrigramModel(object):
         current_tokens = ('START', 'START')
         sentence = []
         while (not sentence or sentence[-1] != 'STOP') and len(sentence) < t:
-            candidates = [trigram for trigram in self.trigramcounts.keys() if trigram[:2] == current_tokens]
-            probabilities = [self.raw_trigram_probability(trigram) for trigram in candidates]
-            generated_word = choice([candidate[2] for candidate in candidates], 1, p=probabilities)[0]
+            candidate_trigrams = [trigram for trigram in self.trigramcounts.keys() if trigram[:2] == current_tokens]
+            candidate_words = [candidate[2] for candidate in candidate_trigrams]
+            probabilities = [self.raw_trigram_probability(trigram) for trigram in candidate_trigrams]
+            generated_word = choice(candidate_words, size=1, p=probabilities)[0]
             sentence.append(generated_word)
             current_tokens = (current_tokens[1], generated_word)
         return sentence            
