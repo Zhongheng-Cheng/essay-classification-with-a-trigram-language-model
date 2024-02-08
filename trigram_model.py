@@ -176,7 +176,12 @@ class TrigramModel(object):
         COMPLETE THIS METHOD (PART 6) 
         Returns the log probability of an entire sequence.
         """
-        return float("inf") 
+        log_prob_sum = 0
+        word_count = 0
+        for sentence in corpus:
+            log_prob_sum += self.sentence_logprob(sentence)
+            word_count += len(sentence)
+        return 2 ** (-log_prob_sum / word_count)
 
 
 def essay_scoring_experiment(training_file1, training_file2, testdir1, testdir2):
@@ -209,8 +214,8 @@ if __name__ == "__main__":
     # print(model.bigramcounts[('START','the')])
     # print(model.unigramcounts[('the',)])
 
-    print(model.raw_trigram_probability(('i', 'told', 'you')))
-    print(model.smoothed_trigram_probability(('i', 'told', 'you')))
+    # print(model.raw_trigram_probability(('i', 'told', 'you')))
+    # print(model.smoothed_trigram_probability(('i', 'told', 'you')))
     # print(model.raw_bigram_probability(('the', 'biggest')))
     # print(model.raw_bigram_probability(('', )))
     # print(model.generate_sentence())
@@ -225,9 +230,9 @@ if __name__ == "__main__":
 
     
     # Testing perplexity: 
-    # dev_corpus = corpus_reader(sys.argv[2], model.lexicon)
-    # pp = model.perplexity(dev_corpus)
-    # print(pp)
+    dev_corpus = corpus_reader(sys.argv[2], model.lexicon)
+    pp = model.perplexity(dev_corpus)
+    print(pp)
 
 
     # Essay scoring experiment: 
