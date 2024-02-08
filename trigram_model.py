@@ -156,7 +156,9 @@ class TrigramModel(object):
         lambda1 = 1/3.0
         lambda2 = 1/3.0
         lambda3 = 1/3.0
-        return 0.0
+        return lambda1 * self.raw_trigram_probability(trigram) + \
+            lambda2 * self.raw_bigram_probability(trigram[1:]) + \
+            lambda3 * self.raw_unigram_probability(trigram[2:])
         
     def sentence_logprob(self, sentence):
         """
@@ -203,10 +205,11 @@ if __name__ == "__main__":
     # print(model.bigramcounts[('START','the')])
     # print(model.unigramcounts[('the',)])
 
-    # print(model.raw_trigram_probability(('START', 'START', 'end')))
+    print(model.raw_trigram_probability(('i', 'told', 'you')))
+    print(model.smoothed_trigram_probability(('i', 'told', 'you')))
     # print(model.raw_bigram_probability(('the', 'biggest')))
     # print(model.raw_bigram_probability(('', )))
-    print(model.generate_sentence())
+    # print(model.generate_sentence())
 
     # put test code here...
     # or run the script from the command line with 
