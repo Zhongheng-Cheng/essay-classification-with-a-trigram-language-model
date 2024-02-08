@@ -88,8 +88,18 @@ class TrigramModel(object):
         """
         COMPLETE THIS METHOD (PART 3)
         Returns the raw (unsmoothed) trigram probability
+
+        P(v | u, w) = P(u, w, v) / P(u, w)
+        => p(v | u, w) = count(u, w, v) / count(u, w)
         """
-        return 0.0
+        if trigram[:-1] == ('START', 'START'):
+            # special case for ('START', 'START')
+            denominator = self.sentence_count
+        else:
+            denominator = self.bigramcounts[trigram[:-1]]
+            if denominator == 0:
+                return 1 / len(self.lexicon)
+        return self.trigramcounts[trigram] / denominator
 
     def raw_bigram_probability(self, bigram):
         """
@@ -97,11 +107,12 @@ class TrigramModel(object):
         Returns the raw (unsmoothed) bigram probability
 
         P(w | u) = P(u, w) / P(u) 
-        == (Count((u, w)) / Count_bigrams)) / (Count(u) / Count_unigrams_without_start)
-        Since Count_bigrams == Count_unigrams_without_start
+        == (count((u, w)) / count_bigrams)) / (count(u) / count_unigrams_without_start)
+        Since count_bigrams == count_unigrams_without_start
         we get P(w | u) = count((u, w)) / count(u)
         """
         if bigram[0] == 'START':
+            # special case for ('START')
             denominator = self.sentence_count
         else:
             denominator = self.unigramcounts[bigram[:-1]]
@@ -183,8 +194,8 @@ if __name__ == "__main__":
     # print(model.bigramcounts[('START','the')])
     # print(model.unigramcounts[('the',)])
 
-    print(model.raw_bigram_probability(('START', 'the')))
-    print(model.raw_bigram_probability(('the', 'biggest')))
+    print(model.raw_trigram_probability(('START', 'START', 'end')))
+    # print(model.raw_bigram_probability(('the', 'biggest')))
     # print(model.raw_bigram_probability(('', )))
 
     # put test code here...
