@@ -180,7 +180,7 @@ class TrigramModel(object):
         word_count = 0
         for sentence in corpus:
             log_prob_sum += self.sentence_logprob(sentence)
-            word_count += len(sentence)
+            word_count += len(sentence) + 1
         return 2 ** (-log_prob_sum / word_count)
 
 
